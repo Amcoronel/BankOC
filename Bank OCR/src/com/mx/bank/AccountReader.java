@@ -24,31 +24,35 @@ public class AccountReader {
 		
 		while(reader.hasNext()) {
 			accounts.add(readNextAccount());
+			readSeparator();
 		}
 		
 		reader.close();
-		
 		return accounts;
 	}
 	
 	public Account readNextAccount() {
 		String[] codedLines = readCodedLines();
-		
+		Account account = decoder.decode(codedLines);
+		return account;
+	}
+	
+	private void readSeparator() {
 		if(reader.hasNextLine())
 			reader.nextLine();
-		
-		Account account = decoder.decode(codedLines);
-		
-		return account;
 	}
 
 	
 	private String[] readCodedLines(){
+		
 		String[] codedLines = new String[AccountDecoder.DIGIT_SQUARE_SIZE];
+		
 		try {
+			
 			for(int i = 0; i < AccountDecoder.DIGIT_SQUARE_SIZE; i++){
 				codedLines[i] = reader.nextLine();
 			}
+			
 		}catch(Exception e) {
 			throw new RuntimeException("Error al leer cuenta");
 		}
@@ -57,14 +61,16 @@ public class AccountReader {
 	
 	private  Scanner getScanner(String fileName) {
 		Scanner reader;
+		
 		try {
 			reader = new Scanner(new FileInputStream("file.txt"));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+		} catch (FileNotFoundException e) {	
 			e.printStackTrace();
 			throw new RuntimeException("Archivo no encontrado");
 		}
+		
 		return reader;
+	
 	}
 	
 }
